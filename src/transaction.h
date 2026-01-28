@@ -10,6 +10,7 @@ class TransactionInputs {
         string owner_id;
     public:
         TransactionInputs();
+        TransactionInputs(string tx_id, int index, string owner_id);
         //SETTERS
         void setTx_id(string s);
         void setIndex(int n);
@@ -26,13 +27,15 @@ class TransactionOutputs {
         string address;
     public: 
         TransactionOutputs();
+        TransactionOutputs(double amount, string owner_id);
+        
         void setAmount(double amount);
         void setOwnerId(string owner_id);
+        
         double getAmount() const;
         string getAddress() const;
 };
 
-// The main Transaction container
 class Transaction {
     private:
         string tx_id;

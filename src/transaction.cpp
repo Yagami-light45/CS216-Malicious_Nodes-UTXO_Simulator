@@ -1,6 +1,13 @@
 #include "transaction.h"
-//TRANSACTION INPUTS
+
+// TRANSACTION INPUTS
 TransactionInputs::TransactionInputs(){}
+
+TransactionInputs::TransactionInputs(string tx_id, int index, string owner_id){
+    this->tx_id = tx_id;
+    this->index = index;
+    this->owner_id = owner_id;
+}
 
 void TransactionInputs::setTx_id(string s) { this->tx_id = s; }
 void TransactionInputs::setIndex(int n) { this->index = n; }
@@ -10,8 +17,14 @@ string TransactionInputs::getTx_id() const { return this->tx_id; }
 string TransactionInputs::getOwner_id() const { return this->owner_id; }
 int TransactionInputs::getIndex() const { return this->index; }
 
+
 // TRANSACTION OUTPUTS
 TransactionOutputs::TransactionOutputs(){};
+
+TransactionOutputs::TransactionOutputs(double amount, string owner_id){
+    this->amount = amount;
+    this->address = owner_id;
+}
 
 void TransactionOutputs::setAmount(double amount) { this->amount = amount; }
 void TransactionOutputs::setOwnerId(string owner_id) { this->address = owner_id; }
@@ -19,7 +32,8 @@ void TransactionOutputs::setOwnerId(string owner_id) { this->address = owner_id;
 double TransactionOutputs::getAmount() const { return this->amount; }
 string TransactionOutputs::getAddress() const { return this->address; }
 
-//TRANSACTION
+
+//  Transaction
 Transaction::Transaction(){};
 
 Transaction::Transaction(string tx_id, vector<TransactionInputs> inputs, vector<TransactionOutputs> outputs){
