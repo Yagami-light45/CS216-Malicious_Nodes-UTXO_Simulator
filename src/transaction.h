@@ -19,8 +19,10 @@ class TransactionInputs {
         string getTx_id() const;
         string getOwner_id() const;
         int getIndex() const;
+        
+        void printData();
 };
-//OUTPUT STRUCTURE
+
 class TransactionOutputs {
     private:
         double amount;
@@ -34,6 +36,8 @@ class TransactionOutputs {
         
         double getAmount() const;
         string getAddress() const;
+        
+        void printData();
 };
 
 class Transaction {
@@ -48,6 +52,8 @@ class Transaction {
         vector<TransactionInputs> getTransactionInputs() const;
         vector<TransactionOutputs> getTransactionOutputs() const;
         string getTx_id() const;
+        
+        void printData();
 };
 
 #endif

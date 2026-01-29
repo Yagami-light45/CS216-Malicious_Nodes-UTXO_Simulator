@@ -1,6 +1,6 @@
 #include "transaction.h"
 
-// TRANSACTION INPUTS
+// TransactionInputs Implementation 
 TransactionInputs::TransactionInputs(){}
 
 TransactionInputs::TransactionInputs(string tx_id, int index, string owner_id){
@@ -17,8 +17,12 @@ string TransactionInputs::getTx_id() const { return this->tx_id; }
 string TransactionInputs::getOwner_id() const { return this->owner_id; }
 int TransactionInputs::getIndex() const { return this->index; }
 
+void TransactionInputs::printData(){
+    cout << tx_id << " " << index << " " << owner_id << endl;
+}
 
-// TRANSACTION OUTPUTS
+
+//TransactionOutputs Implementation 
 TransactionOutputs::TransactionOutputs(){};
 
 TransactionOutputs::TransactionOutputs(double amount, string owner_id){
@@ -32,8 +36,12 @@ void TransactionOutputs::setOwnerId(string owner_id) { this->address = owner_id;
 double TransactionOutputs::getAmount() const { return this->amount; }
 string TransactionOutputs::getAddress() const { return this->address; }
 
+void TransactionOutputs::printData(){
+    cout << amount << " btc " << address << endl;
+}
 
-//  Transaction
+
+// Transaction Implementation
 Transaction::Transaction(){};
 
 Transaction::Transaction(string tx_id, vector<TransactionInputs> inputs, vector<TransactionOutputs> outputs){
@@ -45,3 +53,15 @@ Transaction::Transaction(string tx_id, vector<TransactionInputs> inputs, vector<
 vector<TransactionInputs> Transaction::getTransactionInputs() const { return this->inputs; }
 vector<TransactionOutputs> Transaction::getTransactionOutputs() const { return this->outputs; }
 string Transaction::getTx_id() const { return this->tx_id; }
+
+void Transaction::printData(){
+    cout << "Transaction ID " << tx_id << endl;
+    cout << "Inputs: " << endl;
+    for(auto& it : inputs){
+        it.printData();
+    }
+    cout << "Outputs: " << endl;
+    for(auto& it : outputs){
+        it.printData();
+    }
+}
