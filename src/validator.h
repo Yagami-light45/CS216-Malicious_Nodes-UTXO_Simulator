@@ -13,4 +13,3 @@ bool checkMempoolForUsedUTXOs(Transaction& tx, set<pair<string, int>>& spent_utx
 double calculateFee(Transaction& tx, UTXO_manager& utxo_manager);
 
 #endif // VALIDATOR_H
-

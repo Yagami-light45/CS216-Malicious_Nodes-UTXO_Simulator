@@ -28,71 +28,53 @@ bool createTransaction(Mempool& mempool, UTXO_manager& utxo_manager) {
     string user_id;
     cin >> user_id;
 
-    // Check if user has any UTXOs
+    // Show available UTXOs for this user
     vector<UTXO> available_utxos = utxo_manager.getUTXOs(user_id);
-    if (available_utxos.empty()) {
-        printErrorMessage("No UTXOs available for this user");
+    for (auto& it : available_utxos) {
+        it.printData();
+    }
+
+    // Get transaction inputs manually
+    cout << "Enter transaction input count: ";
+    int input_count;
+    cin >> input_count;
+    if (input_count <= 0) {
+        printErrorMessage("Invalid input count");
         return false;
     }
 
-    // Show user's balance
-    double user_balance = utxo_manager.get_balance(user_id);
-    cout << "Your available balance: " << user_balance << " BTC" << endl;
-
-    cout << "Enter amount to send: ";
-    double amount;
-    cin >> amount;
-
-    cout << "Enter recipient address: ";
-    string recipient;
-    cin >> recipient;
-
-    cout << "Enter transaction fee: ";
-    double fee;
-    cin >> fee;
-
-    // Validate inputs
-    if (amount <= 0) {
-        printErrorMessage("Amount must be positive");
-        return false;
+    vector<TransactionInputs> inputs(input_count);
+    for (int i = 0; i < (int)inputs.size(); i++) {
+        string tx_id;
+        int index;
+        cout << "Enter input transaction ID: ";
+        cin >> tx_id;
+        cout << "Enter input transaction index: ";
+        cin >> index;
+        inputs[i].setIndex(index);
+        inputs[i].setTx_id(tx_id);
+        inputs[i].setOwnerId(user_id);
     }
-    if (fee < 0) {
-        printErrorMessage("Fee cannot be negative");
+
+    // Get transaction outputs manually
+    cout << "Enter transaction output count: ";
+    int output_count;
+    cin >> output_count;
+    if (output_count <= 0) {
+        printErrorMessage("Invalid output count");
         return false;
     }
 
-    double total_needed = amount + fee;
-
-    if (total_needed > user_balance) {
-        printErrorMessage("Insufficient balance for this transaction");
-        return false;
-    }
-
-    // Automatically select UTXOs to cover the total needed
-    vector<TransactionInputs> inputs;
-    double input_sum = 0.0;
-
-    for (auto& utxo : available_utxos) {
-        if (input_sum >= total_needed) {
-            break;
-        }
-        TransactionInputs inp(utxo.getTxId(), utxo.getIndex(), user_id);
-        inputs.push_back(inp);
-        input_sum += utxo.getAmountInUTXO();
-    }
-
-    // Create transaction outputs
-    vector<TransactionOutputs> outputs;
-
-    // Output to recipient
-    TransactionOutputs recipient_output(amount, recipient);
-    outputs.push_back(recipient_output);
-
-    // Calculate change (input_sum - amount - fee)
-    double change = input_sum - amount - fee;
-    if (change > 0) {
-        TransactionOutputs change_output(change, user_id);
-        outputs.push_back(change_output);
+    vector<TransactionOutputs> outputs(output_count);
+    for (int i = 0; i < (int)outputs.size(); i++) {
+        cout << "Enter output amount: ";
+        double amount;
+        cin >> amount;
+        cout << "Enter reciever ID: ";
+        string address;
+        cin >> address;
+        outputs[i].setAmount(amount);
+        outputs[i].setOwnerId(address);
     }
 
     string tx_id = getTransactionId();
@@ -103,12 +85,6 @@ bool createTransaction(Mempool& mempool, UTXO_manager& utxo_manager) {
         return false;
     }
     printGeneralMessage(msg);
-    cout << "Transaction Summary:" << endl;
-    cout << "  Sent: " << amount << " BTC to " << recipient << endl;
-    cout << "  Fee: " << fee << " BTC" << endl;
-    if (change > 0) {
-        cout << "  Change returned: " << change << " BTC" << endl;
-    }
     mempool.printMempoolCount();
     return true;
 }

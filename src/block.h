@@ -26,4 +26,3 @@ void runTestScenarios();
 void exitSimulation();
 
 #endif // BLOCK_H
-
