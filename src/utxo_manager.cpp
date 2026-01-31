@@ -10,6 +10,10 @@ UTXO::UTXO(string tx_id, string owner_id, double amount, int index){
     this->index = index;
 }
 
+string UTXO::getTxId() const { return this->tx_id; }
+
+int UTXO::getIndex() const { return this->index; }
+
 string UTXO::getOwnerId() const { return this->owner_id; }
 
 double UTXO::getAmountInUTXO() const { return this->amount; }

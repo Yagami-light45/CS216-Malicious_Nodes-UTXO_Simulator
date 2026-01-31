@@ -13,6 +13,8 @@ class UTXO {
         UTXO();
         UTXO(string tx_id, string owner_id, double amount, int index);
         
+        string getTxId() const;
+        int getIndex() const;
         string getOwnerId() const;
         double getAmountInUTXO() const;
         void printData();
