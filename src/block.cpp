@@ -187,8 +187,12 @@ bool mineBlock(UTXO_manager& utxo_manager, Mempool& mempool) {
     return true;
 }
 
+// Forward declaration - implemented in tests/test_scenarios.cpp
+void runAllTests();
+
 void runTestScenarios() {
     printGeneralMessage("Running test cases");
+    runAllTests();
 }
 
 void exitSimulation() {

@@ -5,6 +5,7 @@ int main() {
     UTXO_manager utxo_manager;
     cout << "=== Bitcoin Transaction Simulator ===" << endl;
     createIntialTransactions(utxo_manager);
+    printGenesisBlock();
     printMainMenu();
     int userInput;
     cout << "Enter Choice: ";
