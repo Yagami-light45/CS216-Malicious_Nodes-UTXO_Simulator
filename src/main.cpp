@@ -1,5 +1,11 @@
 #include "block.h"
 
+void printSpaces(){
+    cout<<endl;
+    cout<<"*****************************************"<<endl;
+    cout<<endl;
+}
+
 int main() {
     Mempool mempool;
     UTXO_manager utxo_manager;
@@ -13,26 +19,32 @@ int main() {
         switch (userInput) {
             case 1:
                 createTransaction(mempool, utxo_manager);
+                printSpaces();
                 cout << "Enter Choice: ";
                 break;
             case 2:
                 viewUTXOset(utxo_manager);
+                printSpaces();
                 cout << "Enter Choice: ";
                 break;
             case 3:
                 viewMemPool(mempool);
+                printSpaces();
                 cout << "Enter Choice: ";
                 break;
             case 4:
                 mineBlock(utxo_manager, mempool);
+                printSpaces();
                 cout << "Enter Choice: ";
                 break;
             case 5:
                 runTestScenarios();
+                printSpaces();
                 cout << "Enter Choice: ";
                 break;
             case 6:
                 exitSimulation();
+                printSpaces();
                 return 0;
             default:
                 printErrorMessage("Invalid Choice please choose one from the available options");

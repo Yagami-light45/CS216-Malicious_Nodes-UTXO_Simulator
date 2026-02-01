@@ -6,9 +6,9 @@
 class UTXO {
     private:
         string tx_id;
+        int index;
         string owner_id;
         double amount;
-        int index;
     public:
         UTXO();
         UTXO(string tx_id, string owner_id, double amount, int index);

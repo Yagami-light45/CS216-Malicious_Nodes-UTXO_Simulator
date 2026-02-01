@@ -136,30 +136,44 @@ void viewMemPool(Mempool& mempool) {
     }
 }
 
-bool mineBlock(UTXO_manager& utxo_manager, Mempool& mempool) {
-    printGeneralMessage("Mining block");
+bool mineBlock(UTXO_manager& utxo_manager, Mempool& mempool){
+    printGeneralMessage("Mining block...");
     mempool.printMempoolCount();
-    cout << "Enter miner address: ";
-    string minerAddress;
-    cin >> minerAddress;
-    cout << "How many transactions to include: ";
-    int included_transaction_count;
-    cin >> included_transaction_count;
-    vector<Transaction> included_transactions = mempool.getTopNTransactions(utxo_manager, included_transaction_count);
-    if ((int)included_transactions.size() < included_transaction_count) {
-        cout << "Transactions not available" << endl;
+    
+    cout<<"Enter miner address: ";
+    string minerAdress;
+    cin>>minerAdress;
+    
+    cout<<"How many transactions to include: ";
+    int count;
+    cin>>count;
+    
+    // Get top N transactions
+    vector<Transaction> included_transactions = mempool.getTopNTransactions(utxo_manager, count);
+    if(included_transactions.empty()){
+        cout<<"No transactions available to mine.\n";
         return false;
     }
-    for (auto& it : included_transactions) {
+
+    double totalFees = 0.0;
+    static int counter=0;
+    // Process transactions
+    for(auto& it : included_transactions){
         double fee = calculateFee(it, utxo_manager);
+        totalFees += fee;
         removeInputsFromUTXOSet(it, utxo_manager);
         addOutputsToUTXOSet(it, utxo_manager);
-        if (fee > 0) {
-            utxo_manager.add_utxo(it.getTx_id(), minerAddress, fee, -1);
-        }
         mempool.removeTransaction(it.getTx_id());
     }
-    cout << "Mining done" << endl;
+
+    if (totalFees > 0) {
+        string coinbaseTxId = "coinbase_" + to_string(counter); 
+        utxo_manager.add_utxo(coinbaseTxId, minerAdress, totalFees, -1);
+        cout << "Miner " << minerAdress << " rewarded " << totalFees << " BTC (Coinbase).\n";
+    }
+    
+    cout<<"Mining done. " << included_transactions.size() << " transactions confirmed.\n";
+    
     return true;
 }
 
