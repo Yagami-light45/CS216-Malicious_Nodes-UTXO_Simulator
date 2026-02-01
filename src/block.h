@@ -3,11 +3,33 @@
 
 #include "mempool.h"
 
+class Block{
+    private:
+        string block_id;
+        vector<Transaction> transactions;
+        string miner_id;
+    public:
+        void setBlockId(string s);
+        void setTransactions(vector<Transaction>& transactions);
+        void setMinerId(string& s);
+        void printBlock();
+        
+}; 
+class BlockChain{
+    private:
+        vector<Block> blockchain;
+    public:
+        void addBlock(Block& block);
+        void printBlockchain();
+        
+};
+
+
 // Block mining and UTXO manipulation functions
 void removeInputsFromUTXOSet(Transaction& tx, UTXO_manager& utxo_manager);
 void addOutputsToUTXOSet(Transaction& tx, UTXO_manager& utxo_manager);
 void addMinerUTXO(Transaction& tx, UTXO_manager& utxo_manager, string minerAddress);
-bool mineBlock(UTXO_manager& utxo_manager, Mempool& mempool);
+bool mineBlock(UTXO_manager& utxo_manager, Mempool& mempool,BlockChain& blockchain);
 
 // Transaction creation
 bool createTransaction(Mempool& mempool, UTXO_manager& utxo_manager);

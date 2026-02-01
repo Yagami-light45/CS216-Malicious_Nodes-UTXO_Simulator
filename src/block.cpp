@@ -116,7 +116,8 @@ void printMainMenu() {
     cout << " 3. View mempool" << endl;
     cout << " 4. Mine block" << endl;
     cout << " 5. Run test scenarios" << endl;
-    cout << " 6. exitSimulation" << endl;
+    cout << " 6. Print Block chain" << endl;
+    cout << " 7. Exit simulation" << endl;
 }
 
 void viewUTXOset(UTXO_manager& utxo_manager) {
@@ -136,7 +137,7 @@ void viewMemPool(Mempool& mempool) {
     }
 }
 
-bool mineBlock(UTXO_manager& utxo_manager, Mempool& mempool){
+bool mineBlock(UTXO_manager& utxo_manager, Mempool& mempool, BlockChain& blockchain){
     printGeneralMessage("Mining block...");
     mempool.printMempoolCount();
     
@@ -173,7 +174,11 @@ bool mineBlock(UTXO_manager& utxo_manager, Mempool& mempool){
     }
     
     cout<<"Mining done. " << included_transactions.size() << " transactions confirmed.\n";
-    
+    Block newBlock;
+    newBlock.setBlockId("block_"+to_string(counter));
+    newBlock.setMinerId(minerAdress);
+    newBlock.setTransactions(included_transactions);
+    blockchain.addBlock(newBlock);
     return true;
 }
 
@@ -189,3 +194,37 @@ void exitSimulation() {
     printGeneralMessage("Simulation Process complete");
 }
 
+
+void Block::setBlockId(string s){
+    this->block_id=s;
+}
+void Block::setTransactions(vector<Transaction>& transactions){
+    this->transactions = transactions;
+}
+void Block::setMinerId(string& s){
+    this->miner_id=s;
+}
+
+void BlockChain::addBlock(Block& block){
+    this->blockchain.push_back(block);
+}
+void BlockChain::printBlockchain(){
+    if(blockchain.empty()){
+        cout<<"Blockchain is empty"<<endl;
+        return;
+    }
+    cout<<"Printing blockchain"<<endl;
+    for(auto& it : blockchain){
+        it.printBlock();
+    }
+}
+
+
+void Block::printBlock(){
+    cout<<"----------------------------"<<endl;
+    cout<<"Block ID: "<<block_id<<endl;
+    cout<<"Miner ID: "<<miner_id<<endl;
+    for(auto& it : transactions){
+        it.printData();
+    }
+}

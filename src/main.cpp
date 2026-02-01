@@ -9,6 +9,7 @@ void printSpaces(){
 int main() {
     Mempool mempool;
     UTXO_manager utxo_manager;
+    BlockChain blockchain;
     cout << "=== Bitcoin Transaction Simulator ===" << endl;
     createIntialTransactions(utxo_manager);
     printGenesisBlock();
@@ -33,7 +34,7 @@ int main() {
                 cout << "Enter Choice: ";
                 break;
             case 4:
-                mineBlock(utxo_manager, mempool);
+                mineBlock(utxo_manager, mempool, blockchain);
                 printSpaces();
                 cout << "Enter Choice: ";
                 break;
@@ -43,6 +44,11 @@ int main() {
                 cout << "Enter Choice: ";
                 break;
             case 6:
+                blockchain.printBlockchain();
+                printSpaces();
+                cout<<"Enter choice: ";
+                break;
+            case 7:
                 exitSimulation();
                 printSpaces();
                 return 0;
