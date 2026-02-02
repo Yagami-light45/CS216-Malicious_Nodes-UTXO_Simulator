@@ -179,10 +179,11 @@ bool mineBlock(UTXO_manager& utxo_manager, Mempool& mempool, BlockChain& blockch
     newBlock.setMinerId(minerAdress);
     newBlock.setTransactions(included_transactions);
     blockchain.addBlock(newBlock);
+    counter++;  
     return true;
 }
 
-// Forward declaration - implemented in tests/test_scenarios.cpp
+
 void runAllTests();
 
 void runTestScenarios() {

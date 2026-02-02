@@ -40,8 +40,26 @@ pair<bool, string> Mempool::addTransaction(Transaction tx, UTXO_manager& utxo_ma
         spent_UTXOs.insert({it.getTx_id(), it.getIndex()});
     }
     res = {true, "Transaction created and added to mempool"};
+    if(transactions.size()>capacity){
+        this->evictTransaction(utxo_manager);
+        res = {true, "Transaction created and added to mempool, but mempool size exceeded, eviction occured"};
+    }
     return res;
 }
+void Mempool::evictTransaction(UTXO_manager& utxo_manager) {
+    auto it_remove = transactions.begin();
+    for (auto it = transactions.begin(); it != transactions.end(); ++it) {
+        if (calculateFee(it->second, utxo_manager) <
+            calculateFee(it_remove->second, utxo_manager)) {
+            it_remove = it;
+        }
+    }
+    for (auto& inp : it_remove->second.getTransactionInputs()) {
+        spent_UTXOs.erase({inp.getTx_id(), inp.getIndex()});
+    }
+    transactions.erase(it_remove);
+}
+
 
 vector<Transaction> Mempool::getTransactions() {
     vector<Transaction> res;
