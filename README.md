@@ -135,6 +135,7 @@ g++ -std=c++17 -o bitcoin_simulator src/main.cpp src/block.cpp src/mempool.cpp \
    User enters: sender_id → shows available UTXOs for that user
                          → enters input count and UTXO references
                          → enters output count, amounts, and recipients
+                         → In real life this process is abstracted by bitocin wallet providers, but we have choosen to keep it in explicitly.
    ```
 
 2. **Validation Phase** (in order)
