@@ -16,12 +16,12 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Architecture](#architecture)
-3. [Data Flow](#data-flow)
-4. [Data Structures & Design Decisions](#data-structures--design-decisions)
-5. [Component Details](#component-details)
-6. [Transaction Validation](#transaction-validation)
-7. [Building & Running](#building--running)
+2. [Building & Running](#building--running)
+3. [Architecture](#architecture)
+4. [Data Flow](#data-flow)
+5. [Data Structures & Design Decisions](#data-structures--design-decisions)
+6. [Component Details](#component-details)
+7. [Transaction Validation](#transaction-validation)
 8. [Usage Guide](#usage-guide)
 9. [Test Scenarios](#test-scenarios)
 
@@ -38,6 +38,28 @@ This simulator implements a simplified version of Bitcoin's **UTXO (Unspent Tran
 - **Double-Spend Prevention**: Both within transactions and across the mempool
 - **Fee-based Priority**: Higher-fee transactions get priority during mining
 - **First-Seen Rule**: Prevents race attacks by accepting the first valid transaction
+
+---
+
+## Building & Running
+
+### Prerequisites
+
+- C++17 compatible compiler (g++ recommended)
+- Standard library only (no external dependencies)
+
+### Compilation
+
+```bash
+g++ -std=c++17 -o bitcoin_simulator src/main.cpp src/block.cpp src/mempool.cpp \
+    src/transaction.cpp src/utxo_manager.cpp src/validator.cpp tests/test_scenarios.cpp
+```
+
+### Running
+
+```bash
+./bitcoin_simulator
+```
 
 ---
 
@@ -277,33 +299,6 @@ Block
 - **Double-Spend Prevention (Mempool)**: `spent_UTXOs` set tracks all committed UTXOs
 - **Race Attack Prevention**: First-seen rule - first valid transaction wins
 - **Ownership Verification**: `isBelongsTo()` confirms UTXO ownership
-
----
-
-## Building & Running
-
-### Prerequisites
-
-- C++17 compatible compiler (g++ recommended)
-- Standard library only (no external dependencies)
-
-### Compilation
-
-```bash
-# Compile the main simulator
-g++ -std=c++17 -o bitcoin_simulator src/main.cpp src/block.cpp src/mempool.cpp \
-    src/transaction.cpp src/utxo_manager.cpp src/validator.cpp tests/test_scenarios.cpp
-
-# Or compile tests separately
-g++ -std=c++17 -DTEST_MAIN -o test_runner src/block.cpp src/mempool.cpp \
-    src/transaction.cpp src/utxo_manager.cpp src/validator.cpp tests/test_scenarios.cpp
-```
-
-### Running
-
-```bash
-./bitcoin_simulator
-```
 
 ---
 
