@@ -8,7 +8,7 @@ class Mempool {
 private:
     unordered_map<string, Transaction> transactions;
     set<pair<string, int>> spent_UTXOs;
-    int capacity=2;
+    int capacity=50;
 public:
     pair<bool, string> addTransaction(Transaction tx, UTXO_manager& utxo_manager);
     vector<Transaction> getTransactions();

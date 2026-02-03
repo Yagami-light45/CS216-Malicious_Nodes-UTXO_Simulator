@@ -13,7 +13,7 @@ class TransactionInputs {
         TransactionInputs();
         TransactionInputs(string tx_id, int index, string owner_id);
         //SETTERS
-        void setTx_id(string s);
+        void setTx_id(const string& s);
         void setIndex(int n);
         void setOwnerId(string s);
         //GETTERS
@@ -50,7 +50,7 @@ class Transaction {
         vector<TransactionOutputs> outputs;
     public:
         Transaction();
-        Transaction(string tx_id, vector<TransactionInputs> inputs, vector<TransactionOutputs> outputs);
+        Transaction(string& tx_id, vector<TransactionInputs>& inputs, vector<TransactionOutputs>& outputs);
         
         vector<TransactionInputs> getTransactionInputs() const;
         vector<TransactionOutputs> getTransactionOutputs() const;
