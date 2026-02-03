@@ -17,13 +17,11 @@
 
 1. [Overview](#overview)
 2. [Building & Running](#building--running)
-3. [Architecture](#architecture)
-4. [Data Flow](#data-flow)
-5. [Data Structures & Design Decisions](#data-structures--design-decisions)
-6. [Component Details](#component-details)
-7. [Transaction Validation](#transaction-validation)
-8. [Usage Guide](#usage-guide)
-9. [Test Scenarios](#test-scenarios)
+3. [Data Flow](#data-flow)
+4. [Component Details](#component-details)
+5. [Transaction Validation](#transaction-validation)
+6. [Usage Guide](#usage-guide)
+7. [Test Scenarios](#test-scenarios)
 
 ---
 
@@ -59,50 +57,6 @@ g++ -std=c++17 -o bitcoin_simulator src/main.cpp src/block.cpp src/mempool.cpp \
 
 ```bash
 ./bitcoin_simulator
-```
-
----
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         main.cpp                                │
-│                    (Entry Point & Menu)                         │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-          ┌───────────────────┼───────────────────┐
-          ▼                   ▼                   ▼
-┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│   block.cpp     │  │   mempool.cpp   │  │ utxo_manager.cpp│
-│   block.h       │  │   mempool.h     │  │ utxo_manager.h  │
-│                 │  │                 │  │                 │
-│ - Block         │  │ - Mempool       │  │ - UTXO          │
-│ - BlockChain    │  │ - Transaction   │  │ - UTXO_manager  │
-│ - Mining Logic  │  │   Storage       │  │ - Balance Query │
-└─────────────────┘  └─────────────────┘  └─────────────────┘
-          │                   │                   │
-          └───────────────────┼───────────────────┘
-                              ▼
-                    ┌─────────────────┐
-                    │  validator.cpp  │
-                    │  validator.h    │
-                    │                 │
-                    │ - Input Check   │
-                    │ - Duplicate Chk │
-                    │ - Fee Calc      │
-                    └─────────────────┘
-                              │
-          ┌───────────────────┴───────────────────┐
-          ▼                                       ▼
-┌─────────────────┐                    ┌─────────────────┐
-│ transaction.cpp │                    │    utils.h      │
-│ transaction.h   │                    │                 │
-│                 │                    │ - TX ID Gen     │
-│ - Tx Inputs     │                    │ - Print Helpers │
-│ - Tx Outputs    │                    └─────────────────┘
-│ - Transaction   │
-└─────────────────┘
 ```
 
 ---
@@ -200,61 +154,6 @@ g++ -std=c++17 -o bitcoin_simulator src/main.cpp src/block.cpp src/mempool.cpp \
 │ 5. Create Block and add to Blockchain                             │
 └────────────────────────────────────────────────────────────────────┘
 ```
-
----
-
-## Data Structures & Design Decisions
-
-### Why `unordered_map` for Mempool?
-
-```cpp
-unordered_map<string, Transaction> transactions;
-```
-
-| Aspect | Reasoning |
-|--------|-----------|
-| **O(1) Lookup** | Quick retrieval by transaction ID when mining or removing |
-| **O(1) Insert** | Adding new transactions is constant time |
-| **O(1) Delete** | Removing mined transactions is efficient |
-| **No Ordering Needed** | Transaction order determined by fee during mining, not insertion order |
-
-### Why `map` for UTXO Set?
-
-```cpp
-map<pair<string, int>, UTXO> UTXO_set;
-```
-
-| Aspect | Reasoning |
-|--------|-----------|
-| **Composite Key** | UTXOs uniquely identified by (transaction_id, output_index) pair |
-| **Sorted Order** | Enables predictable iteration when displaying UTXOs |
-| **O(log n) Operations** | Acceptable tradeoff for ordered traversal benefits |
-| **Pair Key** | Natural representation - same as Bitcoin's outpoint |
-
-### Why `set` for Spent UTXOs Tracking in Mempool?
-
-```cpp
-set<pair<string, int>> spent_UTXOs;
-```
-
-| Aspect | Reasoning |
-|--------|-----------|
-| **Quick Membership Test** | O(log n) check if UTXO already committed |
-| **No Duplicates** | Set inherently prevents double-tracking |
-| **Easy Cleanup** | Simple erase when transaction removed/mined |
-
-### Why Vectors for Transaction Inputs/Outputs?
-
-```cpp
-vector<TransactionInputs> inputs;
-vector<TransactionOutputs> outputs;
-```
-
-| Aspect | Reasoning |
-|--------|-----------|
-| **Variable Size** | Transactions can have any number of inputs/outputs |
-| **Index-Based Access** | Output index (0, 1, 2...) used for UTXO identification |
-| **Contiguous Memory** | Efficient iteration during validation |
 
 ---
 
