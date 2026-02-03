@@ -9,7 +9,7 @@ TransactionInputs::TransactionInputs(string tx_id, int index, string owner_id){
     this->owner_id = owner_id;
 }
 
-void TransactionInputs::setTx_id(string s) { this->tx_id = s; }
+void TransactionInputs::setTx_id(const string& s) { this->tx_id = s; }
 void TransactionInputs::setIndex(int n) { this->index = n; }
 void TransactionInputs::setOwnerId(string s) { this->owner_id = s; }
 
@@ -44,7 +44,7 @@ void TransactionOutputs::printData(){
 // Transaction Implementation
 Transaction::Transaction(){};
 
-Transaction::Transaction(string tx_id, vector<TransactionInputs> inputs, vector<TransactionOutputs> outputs){
+Transaction::Transaction(const string& tx_id, const vector<TransactionInputs>& inputs, const vector<TransactionOutputs>& outputs){
     this->tx_id = tx_id;
     this->inputs = inputs;
     this->outputs = outputs;

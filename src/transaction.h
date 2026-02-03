@@ -50,7 +50,7 @@ class Transaction {
         vector<TransactionOutputs> outputs;
     public:
         Transaction();
-        Transaction(string& tx_id, vector<TransactionInputs>& inputs, vector<TransactionOutputs>& outputs);
+        Transaction(const string& tx_id, const vector<TransactionInputs>& inputs, const vector<TransactionOutputs>& outputs);
         
         vector<TransactionInputs> getTransactionInputs() const;
         vector<TransactionOutputs> getTransactionOutputs() const;
