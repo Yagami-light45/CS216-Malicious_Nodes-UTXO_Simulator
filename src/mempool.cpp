@@ -27,7 +27,7 @@ pair<bool, string> Mempool::addTransaction(Transaction tx, UTXO_manager& utxo_ma
         return res;
     }
     pair<double, double> check_values = getInputSumAndOutputSum(tx, utxo_manager);
-    if (check_values.first < check_values.second) {
+    if (check_values.first < check_values.second - 1e-9) {
         res = {false, "Value constraints failed"};
         return res;
     }
