@@ -56,7 +56,7 @@ bool checkMempoolForUsedUTXOs(Transaction& tx, set<pair<string, int>>& spent_utx
 }
 
 double calculateFee(Transaction& tx, UTXO_manager& utxo_manager) {
-    auto [input_sum, output_sum] = getInputSumAndOutputSum(tx, utxo_manager);
-    return input_sum - output_sum;
+    pair<double, double> sums = getInputSumAndOutputSum(tx, utxo_manager);
+    return sums.first - sums.second;
 }
 

@@ -105,12 +105,12 @@ bool createTransaction(Mempool& mempool, UTXO_manager& utxo_manager) {
     
     string tx_id = getTransactionId();
     Transaction tx(tx_id, inputs, outputs);
-    auto [ok, msg] = mempool.addTransaction(tx, utxo_manager);
-    if (!ok) {
-        printErrorMessage(msg);
+    auto result = mempool.addTransaction(tx, utxo_manager);
+    if (!result.first) {
+        printErrorMessage(result.second);
         return false;
     }
-    printGeneralMessage(msg);
+    printGeneralMessage(result.second);
     mempool.printMempoolCount();
     return true;
 }

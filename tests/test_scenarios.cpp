@@ -55,7 +55,9 @@ bool test1_BasicValidTransaction(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx("tx_test1", inputs, outputs);
     
-    auto [success, msg] = mempool.addTransaction(tx, utxo_manager);
+    pair<bool, string> result = mempool.addTransaction(tx, utxo_manager);
+    bool success = result.first;
+    string msg = result.second;
     
     cout << "Result: " << msg << endl;
     
@@ -96,7 +98,9 @@ bool test2_MultipleInputs(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx("tx_test2", inputs, outputs);
     
-    auto [success, msg] = mempool.addTransaction(tx, utxo_manager);
+    pair<bool, string> result = mempool.addTransaction(tx, utxo_manager);
+    bool success = result.first;
+    string msg = result.second;
     
     cout << "Result: " << msg << endl;
     
@@ -128,7 +132,9 @@ bool test3_DoubleSpendSameTransaction(UTXO_manager& utxo_manager, Mempool& mempo
     
     Transaction tx("tx_test3", inputs, outputs);
     
-    auto [success, msg] = mempool.addTransaction(tx, utxo_manager);
+    pair<bool, string> result = mempool.addTransaction(tx, utxo_manager);
+    bool success = result.first;
+    string msg = result.second;
     
     cout << "Result: " << msg << endl;
     
@@ -166,7 +172,9 @@ bool test4_MempoolDoubleSpend(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx1("tx_test4_1", inputs1, outputs1);
     
-    auto [success1, msg1] = mempool.addTransaction(tx1, utxo_manager);
+    pair<bool, string> result1 = mempool.addTransaction(tx1, utxo_manager);
+    bool success1 = result1.first;
+    string msg1 = result1.second;
     cout << "TX1 Result: " << msg1 << endl;
     
     // TX2: Alice -> Charlie (same UTXO!)
@@ -179,7 +187,9 @@ bool test4_MempoolDoubleSpend(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx2("tx_test4_2", inputs2, outputs2);
     
-    auto [success2, msg2] = mempool.addTransaction(tx2, utxo_manager);
+    auto result2 = mempool.addTransaction(tx2, utxo_manager);
+    bool success2 = result2.first;
+    string msg2 = result2.second;
     cout << "TX2 Result: " << msg2 << endl;
     
     bool passed = success1 && !success2;  // TX1 accepted, TX2 rejected
@@ -214,7 +224,9 @@ bool test5_InsufficientFunds(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx("tx_test5", inputs, outputs);
     
-    auto [success, msg] = mempool.addTransaction(tx, utxo_manager);
+    auto result = mempool.addTransaction(tx, utxo_manager);
+    bool success = result.first;
+    string msg = result.second;
     
     cout << "Result: " << msg << endl;
     
@@ -246,7 +258,9 @@ bool test6_NegativeAmount(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx("tx_test6", inputs, outputs);
     
-    auto [success, msg] = mempool.addTransaction(tx, utxo_manager);
+    auto result = mempool.addTransaction(tx, utxo_manager);
+    bool success = result.first;
+    string msg = result.second;
     
     cout << "Result: " << msg << endl;
     
@@ -277,7 +291,9 @@ bool test7_ZeroFeeTransaction(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx("tx_test7", inputs, outputs);
     
-    auto [success, msg] = mempool.addTransaction(tx, utxo_manager);
+    pair<bool, string> result = mempool.addTransaction(tx, utxo_manager);
+    bool success = result.first;
+    string msg = result.second;
     
     cout << "Result: " << msg << endl;
     
@@ -313,7 +329,9 @@ bool test8_RaceAttackSimulation(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx1("tx_test8_merchant", inputs1, outputs1);
     
-    auto [success1, msg1] = mempool.addTransaction(tx1, utxo_manager);
+    auto result1 = mempool.addTransaction(tx1, utxo_manager);
+    bool success1 = result1.first;
+    string msg1 = result1.second;
     cout << "TX1 (Merchant, low fee) Result: " << msg1 << endl;
     
     // TX2: High-fee attack transaction (arrives second)
@@ -326,7 +344,9 @@ bool test8_RaceAttackSimulation(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx2("tx_test8_attack", inputs2, outputs2);
     
-    auto [success2, msg2] = mempool.addTransaction(tx2, utxo_manager);
+    auto result2 = mempool.addTransaction(tx2, utxo_manager);
+    bool success2 = result2.first;
+    string msg2 = result2.second;
     cout << "TX2 (Attack, high fee) Result: " << msg2 << endl;
     
     bool passed = success1 && !success2;
@@ -445,7 +465,9 @@ bool test10_UnconfirmedChain(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx1("tx_unconf1", inputs1, outputs1);
     
-    auto [success1, msg1] = mempool.addTransaction(tx1, utxo_manager);
+    pair<bool, string> result1 = mempool.addTransaction(tx1, utxo_manager);
+    bool success1 = result1.first;
+    string msg1 = result1.second;
     cout << "TX1 (David -> Frank) Result: " << msg1 << endl;
     
     // TX2: Frank tries to spend the unconfirmed UTXO
@@ -458,7 +480,9 @@ bool test10_UnconfirmedChain(UTXO_manager& utxo_manager, Mempool& mempool) {
     
     Transaction tx2("tx_unconf2", inputs2, outputs2);
     
-    auto [success2, msg2] = mempool.addTransaction(tx2, utxo_manager);
+    pair<bool, string> result2 = mempool.addTransaction(tx2, utxo_manager);
+    bool success2 = result2.first;
+    string msg2 = result2.second;
     cout << "TX2 (Frank spends unconfirmed) Result: " << msg2 << endl;
     
     // Our design: Reject spending unconfirmed UTXOs
