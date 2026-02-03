@@ -144,8 +144,9 @@ g++ -std=c++17 -o bitcoin_simulator src/main.cpp src/block.cpp src/mempool.cpp \
    │ 1. Fetch all UTXOs belonging to sender                      │
    │ 2. Sort UTXOs by amount (largest first)                     │
    │ 3. Greedily select UTXOs until total >= amount needed       │
-   │ 4. Calculate change = total_input - amount - fee (0.001)    │
-   │ 5. Create outputs: [recipient: amount] + [sender: change]   │
+   │ 4. Calculate change = total_input - amount                  │
+   │ 5. Calculate fee = 0.1% of change                           │
+   │ 6. Create outputs: [recipient: amount] + [sender: change-fee]│
    └─────────────────────────────────────────────────────────────┘
    
    This mimics how real Bitcoin wallets work - users don't manually
@@ -337,22 +338,27 @@ Main Menu:
 Simply provide 3 inputs - the system handles UTXO selection automatically:
 
 ```
-1. Enter sender ID (e.g., "Alice")
+1. Enter sender ID (e.g., "Alice") → Shows available balance
 2. Enter recipient ID (e.g., "Bob")
 3. Enter amount to transfer (e.g., 10.0)
 
 The system automatically:
+- Shows sender's available balance
 - Selects optimal UTXOs from sender's balance
-- Calculates and returns change to sender
-- Applies a small transaction fee (0.001 BTC)
+- Calculates change and applies 0.1% fee on the change
 - Displays a transaction summary before adding to mempool
 ```
 
 **Example:**
 ```
 Enter sender ID: Alice
+
+Alice's available balance: 50 BTC
+
 Enter recipient ID: Bob
 Enter amount to transfer: 10
+
+Transaction fee (0.1% of change): 0.04 BTC
 
 --- Transaction Summary ---
 From: Alice
@@ -361,7 +367,6 @@ Amount: 10 BTC
 UTXOs used: 1
 Total input: 50 BTC
 ---------------------------
-Transaction fee: 0.001 BTC
 ```
 
 ### Mining a Block (Option 4)
@@ -417,7 +422,7 @@ The test suite (`tests/test_scenarios.cpp`) covers 10 comprehensive scenarios:
 | **First-Seen Rule** | Prevents Replace-By-Fee (RBF) attacks - simulates original Bitcoin behavior |
 | **Fee = Input - Output** | Standard Bitcoin fee calculation - difference goes to miner |
 | **Auto-generated TX IDs** | Simplifies demo - real Bitcoin uses hash of transaction |
-| **Fixed Fee (0.001 BTC)** | Simplifies UX - real Bitcoin uses dynamic fee estimation based on network congestion |
+| **Fee = 0.1% of Change** | Fee is proportional to the change amount returned to sender - incentivizes efficient UTXO usage |
 
 ---
 
@@ -440,7 +445,3 @@ CS216-Malicious_Nodes-UTXO_Simulator/
 ```
 
 ---
-
-## License
-
-This project is developed for educational purposes as part of CS-216: Introduction to Blockchain course.

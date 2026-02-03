@@ -89,14 +89,18 @@ bool createTransaction(Mempool& mempool, UTXO_manager& utxo_manager) {
     vector<TransactionOutputs> outputs;
     outputs.push_back(TransactionOutputs(amount, recipient_id));  // Payment to recipient
     
-    // Calculate change (input - output = change + fee)
-    // We'll use a small fee of 0.001 BTC or whatever remains if less
+    // Calculate change and fee
+    // Fee is 0.1% of the change (value returned to sender)
     double change = total_input - amount;
-    if (change > 0.001) {
-        outputs.push_back(TransactionOutputs(change - 0.001, sender_id));  // Change back to sender (minus small fee)
-        cout << "Transaction fee: 0.001 BTC" << endl;
-    } else if (change > 0) {
-        cout << "Transaction fee: " << change << " BTC (entire remainder)" << endl;
+    double fee = change * 0.001;  // 0.1% of change
+    double change_after_fee = change - fee;
+    
+    if (change_after_fee > 0) {
+        outputs.push_back(TransactionOutputs(change_after_fee, sender_id));  // Change back to sender (minus fee)
+    }
+    
+    if (fee > 0) {
+        cout << "Transaction fee (0.1% of change): " << fee << " BTC" << endl;
     }
     
     // Display transaction summary
