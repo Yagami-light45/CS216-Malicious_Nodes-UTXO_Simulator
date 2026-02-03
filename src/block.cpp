@@ -251,12 +251,28 @@ void BlockChain::printBlockchain(){
     }
 }
 
+void Block::printBlock() {
+    int w = 40; 
+    string line = "+" + string(w - 2, '-') + "+";
 
-void Block::printBlock(){
-    cout<<"----------------------------"<<endl;
-    cout<<"Block ID: "<<block_id<<endl;
-    cout<<"Miner ID: "<<miner_id<<endl;
-    for(auto& it : transactions){
-        it.printData();
+    cout << endl;
+    cout << line << endl;
+    
+    cout << "| " << left << setw(w - 4) << ("Block ID : " + block_id) << " |" << endl;
+    cout << "| " << left << setw(w - 4) << ("Miner    : " + miner_id) << " |" << endl;
+    cout << "| " << left << setw(w - 4) << ("Tx Count : " + to_string(transactions.size())) << " |" << endl;
+    
+    cout << "|" << string(w - 2, '-') << "|" << endl;
+
+    if (transactions.empty()) {
+        cout << "| " << left << setw(w - 4) << "(No Transactions)" << " |" << endl;
+    } else {
+        for (auto& tx : transactions) {
+            cout << "| " << left << setw(w - 4) << (" -> " + tx.getTx_id()) << " |" << endl;
+        }
     }
+
+    cout << line << endl;
+    cout << setw(w/2) << " " << "|" << endl;
+    cout << setw(w/2) << " " << "v" << endl;
 }
