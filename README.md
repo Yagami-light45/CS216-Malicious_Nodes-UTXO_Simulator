@@ -122,23 +122,37 @@ g++ -std=c++17 -o bitcoin_simulator src/main.cpp src/block.cpp src/mempool.cpp \
        ▼                    ▼                    ▼                    ▼
    User Input          Validation           UTXO Updates         Permanent
    - Sender ID         - UTXO exists?       - Remove spent       Record
-   - Input UTXOs       - Owner match?       - Add new UTXOs
-   - Output amounts    - No duplicates?     - Miner reward
-   - Recipients        - Sufficient funds?
+   - Recipient ID      - Owner match?       - Add new UTXOs
+   - Amount            - No duplicates?     - Miner reward
+                       - Sufficient funds?
                        - Not in mempool?
 ```
 
 ### Detailed Flow: Creating a Transaction
 
-1. **User Input Phase**
+1. **User Input Phase** (Simplified - like a real wallet)
    ```
-   User enters: sender_id → shows available UTXOs for that user
-                         → enters input count and UTXO references
-                         → enters output count, amounts, and recipients
-                         → In real life this process is abstracted by bitocin wallet providers, but we have choosen to keep it in explicitly.
+   User enters only 3 things:
+   1. Sender ID    → Who is sending the BTC
+   2. Recipient ID → Who is receiving the BTC
+   3. Amount       → How much BTC to send
    ```
 
-2. **Validation Phase** (in order)
+2. **Automatic UTXO Selection** (handled by system)
+   ```
+   ┌─────────────────────────────────────────────────────────────┐
+   │ 1. Fetch all UTXOs belonging to sender                      │
+   │ 2. Sort UTXOs by amount (largest first)                     │
+   │ 3. Greedily select UTXOs until total >= amount needed       │
+   │ 4. Calculate change = total_input - amount - fee (0.001)    │
+   │ 5. Create outputs: [recipient: amount] + [sender: change]   │
+   └─────────────────────────────────────────────────────────────┘
+   
+   This mimics how real Bitcoin wallets work - users don't manually
+   select UTXOs; the wallet software handles it automatically.
+   ```
+
+3. **Validation Phase** (in order)
    ```
    ┌─────────────────────────────────────────────────────────────┐
    │ 1. checkInputValidity()                                     │
@@ -161,7 +175,7 @@ g++ -std=c++17 -o bitcoin_simulator src/main.cpp src/block.cpp src/mempool.cpp \
    └─────────────────────────────────────────────────────────────┘
    ```
 
-3. **Mempool Storage Phase**
+4. **Mempool Storage Phase**
    - Transaction added to `unordered_map<string, Transaction>`
    - Input UTXOs tracked in `set<pair<string, int>> spent_UTXOs`
    - If capacity exceeded, lowest-fee transaction evicted
@@ -320,17 +334,34 @@ Main Menu:
 
 ### Creating a Transaction (Option 1)
 
+Simply provide 3 inputs - the system handles UTXO selection automatically:
+
 ```
-1. Enter sender's user ID (e.g., "Alice")
-2. View displayed available UTXOs for that user
-3. Enter number of inputs to use
-4. For each input:
-   - Enter source transaction ID (e.g., "GENESIS")
-   - Enter output index (e.g., 0)
-5. Enter number of outputs
-6. For each output:
-   - Enter amount to send
-   - Enter recipient ID
+1. Enter sender ID (e.g., "Alice")
+2. Enter recipient ID (e.g., "Bob")
+3. Enter amount to transfer (e.g., 10.0)
+
+The system automatically:
+- Selects optimal UTXOs from sender's balance
+- Calculates and returns change to sender
+- Applies a small transaction fee (0.001 BTC)
+- Displays a transaction summary before adding to mempool
+```
+
+**Example:**
+```
+Enter sender ID: Alice
+Enter recipient ID: Bob
+Enter amount to transfer: 10
+
+--- Transaction Summary ---
+From: Alice
+To: Bob
+Amount: 10 BTC
+UTXOs used: 1
+Total input: 50 BTC
+---------------------------
+Transaction fee: 0.001 BTC
 ```
 
 ### Mining a Block (Option 4)
@@ -380,11 +411,13 @@ The test suite (`tests/test_scenarios.cpp`) covers 10 comprehensive scenarios:
 
 | Decision | Rationale |
 |----------|-----------|
+| **Automatic UTXO Selection** | Mimics real Bitcoin wallets - users specify sender, recipient, and amount; system selects optimal UTXOs using greedy algorithm (largest-first) |
 | **No Unconfirmed Chaining** | Transactions can only spend confirmed UTXOs - simpler to validate and prevents complex dependency chains |
 | **Mempool Capacity Limit** | Demonstrates fee-based eviction when mempool is full |
 | **First-Seen Rule** | Prevents Replace-By-Fee (RBF) attacks - simulates original Bitcoin behavior |
 | **Fee = Input - Output** | Standard Bitcoin fee calculation - difference goes to miner |
 | **Auto-generated TX IDs** | Simplifies demo - real Bitcoin uses hash of transaction |
+| **Fixed Fee (0.001 BTC)** | Simplifies UX - real Bitcoin uses dynamic fee estimation based on network congestion |
 
 ---
 
