@@ -3,6 +3,7 @@
 
 #include "validator.h"
 
+// Represents the Mempool
 class Mempool {
 private:
     unordered_map<string, Transaction> transactions;

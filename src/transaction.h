@@ -3,6 +3,7 @@
 
 #include "utils.h"
 
+// Represents an input to a transaction
 class TransactionInputs {
     private:
         string tx_id;
@@ -23,6 +24,7 @@ class TransactionInputs {
         void printData();
 };
 
+// Represents an output of a transaction
 class TransactionOutputs {
     private:
         double amount;
@@ -40,6 +42,7 @@ class TransactionOutputs {
         void printData();
 };
 
+// Represents a transaction
 class Transaction {
     private:
         string tx_id;

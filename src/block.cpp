@@ -1,11 +1,13 @@
 #include "block.h"
 
+// Removes the UTXOs that are used as inputs in a transaction from the UTXO set.
 void removeInputsFromUTXOSet(Transaction& tx, UTXO_manager& utxo_manager) {
     for (auto& it : tx.getTransactionInputs()) {
         utxo_manager.remove_utxo(it.getTx_id(), it.getIndex());
     }
 }
 
+// Adds the new UTXOs created as outputs of a transaction to the UTXO set.
 void addOutputsToUTXOSet(Transaction& tx, UTXO_manager& utxo_manager) {
     int idx = 0;
     for (auto& it : tx.getTransactionOutputs()) {
@@ -14,6 +16,7 @@ void addOutputsToUTXOSet(Transaction& tx, UTXO_manager& utxo_manager) {
     }
 }
 
+// Adds the transaction fee as a UTXO for the miner.
 void addMinerUTXO(Transaction& tx, UTXO_manager& utxo_manager, string minerAddress) {
     pair<double, double> fees = getInputSumAndOutputSum(tx, utxo_manager);
     if (fees.first > fees.second) {
@@ -22,6 +25,8 @@ void addMinerUTXO(Transaction& tx, UTXO_manager& utxo_manager, string minerAddre
     }
 }
 
+// Handles the creation of a new transaction
+// selecting UTXOs, and creating inputs and outputs.
 bool createTransaction(Mempool& mempool, UTXO_manager& utxo_manager) {
     printGeneralMessage("Creating new Transaction");
     

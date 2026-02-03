@@ -3,6 +3,7 @@
 
 #include "utils.h"
 
+// Represents an UTXO.
 class UTXO {
     private:
         string tx_id;
@@ -20,6 +21,7 @@ class UTXO {
         void printData();
 };
 
+// Manages the UTXOs set
 class UTXO_manager {
     private:
         // Maps (Transaction ID, Index)

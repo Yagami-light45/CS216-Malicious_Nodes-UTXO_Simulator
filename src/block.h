@@ -3,6 +3,7 @@
 
 #include "mempool.h"
 
+// Represents a single block in the blockchain.
 class Block{
     private:
         string block_id;
@@ -15,6 +16,7 @@ class Block{
         void printBlock();
         
 }; 
+// Represents the entire blockchain, a chain of blocks.
 class BlockChain{
     private:
         vector<Block> blockchain;

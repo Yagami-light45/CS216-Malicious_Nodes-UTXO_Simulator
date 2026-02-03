@@ -1,5 +1,6 @@
 #include "mempool.h"
 
+// Adds a transaction to the mempool after performing several validation checks.
 pair<bool, string> Mempool::addTransaction(Transaction tx, UTXO_manager& utxo_manager) {
     // Checks to be done
     /*
@@ -46,6 +47,7 @@ pair<bool, string> Mempool::addTransaction(Transaction tx, UTXO_manager& utxo_ma
     }
     return res;
 }
+// Evicts the transaction with the lowest fee from the mempool if the capacity is exceeded.
 void Mempool::evictTransaction(UTXO_manager& utxo_manager) {
     auto it_remove = transactions.begin();
     for (auto it = transactions.begin(); it != transactions.end(); ++it) {
@@ -69,10 +71,12 @@ vector<Transaction> Mempool::getTransactions() {
     return res;
 }
 
+// Number of transactions currently in the mempool.
 void Mempool::printMempoolCount() {
     cout << "Mempool now has " << transactions.size() << " transactions" << endl;
 }
 
+// Removes a transaction from the mempool by its ID.
 bool Mempool::removeTransaction(string tx_id) {
     auto it = transactions.find(tx_id);
     if (it == transactions.end()) return false;
@@ -95,6 +99,7 @@ vector<Transaction> Mempool::getTopNTransactions(UTXO_manager& utxo_manager, int
     return all_transactions;
 }
 
+// Clears all transactions from the mempool.
 void Mempool::clearMempool() {
     transactions.clear();
     spent_UTXOs.clear();
